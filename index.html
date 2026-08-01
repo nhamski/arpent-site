@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arpent - Ranch Management, Simplified</title>
+  <meta name="description" content="Arpent is a multi-species livestock and ranch management SaaS. Track cattle, sheep, goats, hogs, and poultry. Pasture management, health logs, sell-timing, and grazing planning — all offline-capable.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐂</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+
+  <!-- GA4 placeholder -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <style>
+    /* ===== 1656 Design Tokens ===== */
+    :root {
+      --paper:#faf6ee; --paper-raised:#fffdf8; --paper-sunk:#f0e9db;
+      --line:#e3d9c6; --line-strong:#d3c6ab;
+      --ink:#2a2118; --ink-2:#5d5241; --ink-3:#8c7f66;
+      --accent:#a9762c; --accent-soft:#c79a4e; --accent-wash:#f3e7cf;
+      --accent-dark:#8b5e1a;
+      --brass:#a9762c; --brass-wash:#f3e7cf;
+      --serif:"Source Serif 4","Iowan Old Style","Palatino Linotype",Georgia,serif;
+      --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --max-w: 1120px;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --paper:#1c150e; --paper-raised:#251c12; --paper-sunk:#171009;
+        --line:#392c1d; --line-strong:#4a3a26;
+        --ink:#f4eede; --ink-2:#cbbda3; --ink-3:#9c8e74;
+        --accent:#d3a24f; --accent-soft:#b98a3d; --accent-wash:#33260f;
+        --accent-dark:#e0b060;
+        --brass:#d3a24f; --brass-wash:#33260f;
+      }
+    }
+    :root[data-theme="dark"] {
+      --paper:#1c150e; --paper-raised:#251c12; --paper-sunk:#171009;
+      --line:#392c1d; --line-strong:#4a3a26;
+      --ink:#f4eede; --ink-2:#cbbda3; --ink-3:#9c8e74;
+      --accent:#d3a24f; --accent-soft:#b98a3d; --accent-wash:#33260f;
+      --accent-dark:#e0b060;
+      --brass:#d3a24f; --brass-wash:#33260f;
+    }
+    :root[data-theme="light"] {
+      --paper:#faf6ee; --paper-raised:#fffdf8; --paper-sunk:#f0e9db;
+      --line:#e3d9c6; --line-strong:#d3c6ab;
+      --ink:#2a2118; --ink-2:#5d5241; --ink-3:#8c7f66;
+      --accent:#a9762c; --accent-soft:#c79a4e; --accent-wash:#f3e7cf;
+      --accent-dark:#8b5e1a;
+      --brass:#a9762c; --brass-wash:#f3e7cf;
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+    a:hover { color: var(--accent-dark); }
+
+    /* ===== Layout ===== */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem; }
+
+    /* ===== Nav ===== */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--paper-raised);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: var(--max-w); margin: 0 auto; padding: 0 1.25rem;
+      height: 60px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 0.625rem;
+      font-family: var(--serif); font-weight: 700; font-size: 1.25rem;
+      color: var(--ink); text-decoration: none;
+    }
+    .nav-brand-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    .nav-links { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem; font-weight: 500; color: var(--ink-2);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1.125rem;
+      border: none; border-radius: 6px;
+      font-family: var(--sans); font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-dark); color: #fff; }
+    .btn-ghost {
+      background: transparent; color: var(--accent);
+      border: 1px solid var(--line-strong);
+    }
+    .btn-ghost:hover { border-color: var(--accent); background: var(--accent-wash); }
+    .btn-lg { padding: 0.75rem 1.75rem; font-size: 1rem; border-radius: 8px; }
+
+    .nav-signin { white-space: nowrap; }
+
+    /* User pill (post-auth) */
+    .user-pill {
+      display: none; align-items: center; gap: 0.5rem;
+      padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+      background: var(--accent-wash);
+      border-radius: 999px;
+      font-size: 0.8125rem; font-weight: 500; color: var(--ink);
+    }
+    .user-pill img {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--accent-soft);
+    }
+    .user-pill.visible { display: flex; }
+
+    /* Mobile hamburger */
+    .nav-toggle {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      width: 32px; height: 32px;
+      flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px;
+      background: var(--ink); border-radius: 2px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        position: absolute; top: 60px; left: 0; right: 0;
+        flex-direction: column; gap: 0;
+        background: var(--paper-raised);
+        border-bottom: 1px solid var(--line);
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .nav-links.open { max-height: 320px; }
+      .nav-links li { width: 100%; }
+      .nav-links a, .nav-links .btn {
+        display: block; padding: 0.875rem 1.25rem;
+        border-bottom: 1px solid var(--line);
+        width: 100%; text-align: left; border-radius: 0;
+      }
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-wash);
+      padding: 0.25rem 0.875rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--ink-2);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ===== Section Shared ===== */
+    section { padding: 4.5rem 0; }
+    .section-label {
+      font-family: var(--sans);
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700; color: var(--ink);
+      margin-bottom: 0.75rem; line-height: 1.2;
+    }
+    .section-subtitle {
+      font-size: 1.0625rem; color: var(--ink-2);
+      max-width: 560px; line-height: 1.7;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-header .section-subtitle { margin: 0 auto; }
+    .section-divider {
+      border: none; border-top: 1px solid var(--line);
+      margin: 0;
+    }
+
+    /* ===== Features ===== */
+    #features { background: var(--paper-sunk); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      border-color: var(--accent-soft);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .feature-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px;
+      background: var(--accent-wash);
+      border-radius: 10px;
+      font-size: 1.375rem;
+      margin-bottom: 1rem;
+    }
+    .feature-card h3 {
+      font-family: var(--serif);
+      font-size: 1.125rem; font-weight: 600;
+      margin-bottom: 0.5rem; color: var(--ink);
+    }
+    .feature-card p {
+      font-size: 0.9375rem; color: var(--ink-2); line-height: 1.65;
+    }
+
+    /* ===== Demo ===== */
+    #demo { padding-bottom: 5rem; }
+    .demo-card {
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .demo-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+      background: var(--paper-sunk);
+    }
+    .demo-dots { display: flex; gap: 6px; }
+    .demo-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .demo-dots span:nth-child(1) { background: #ef6b5e; }
+    .demo-dots span:nth-child(2) { background: #f4bf4f; }
+    .demo-dots span:nth-child(3) { background: #62c554; }
+    .demo-bar {
+      flex: 1;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem; color: var(--ink-3);
+      font-family: var(--sans);
+    }
+    .demo-card iframe {
+      display: block;
+      width: 100%; height: 600px;
+      border: none;
+    }
+    @media (max-width: 640px) {
+      .demo-card iframe { height: 450px; }
+    }
+
+    /* ===== Pricing ===== */
+    #pricing { background: var(--paper-sunk); }
+    .pricing-card {
+      max-width: 560px;
+      margin: 0 auto;
+      background: var(--paper-raised);
+      border: 2px solid var(--accent-soft);
+      border-radius: var(--radius-lg);
+      padding: 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    }
+    .pricing-badge {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-wash);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+    .pricing-card h3 {
+      font-family: var(--serif);
+      font-size: 1.75rem; font-weight: 700;
+      margin-bottom: 0.75rem; color: var(--ink);
+    }
+    .pricing-card p {
+      font-size: 1.0625rem; color: var(--ink-2);
+      margin-bottom: 2rem; line-height: 1.65;
+    }
+    .pricing-card .highlight {
+      color: var(--accent); font-weight: 600;
+    }
+
+    /* ===== Blog ===== */
+    #blog {}
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .blog-card {
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .blog-card:hover {
+      border-color: var(--accent-soft);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .blog-thumb {
+      width: 100%; height: 180px;
+      background: var(--accent-wash);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .blog-body { padding: 1.5rem; }
+    .blog-meta {
+      font-size: 0.8125rem; color: var(--ink-3);
+      margin-bottom: 0.5rem;
+    }
+    .blog-card h3 {
+      font-family: var(--serif);
+      font-size: 1.125rem; font-weight: 600;
+      color: var(--ink); margin-bottom: 0.5rem;
+      line-height: 1.35;
+    }
+    .blog-card p {
+      font-size: 0.9375rem; color: var(--ink-2);
+      line-height: 1.6;
+    }
+    .blog-card .read-more {
+      display: inline-block; margin-top: 0.75rem;
+      font-size: 0.875rem; font-weight: 600; color: var(--accent);
+    }
+    .blog-card .read-more:hover { color: var(--accent-dark); }
+
+    /* ===== Footer ===== */
+    .footer {
+      background: var(--paper-sunk);
+      border-top: 1px solid var(--line);
+      padding: 3rem 0 2rem;
+    }
+    .footer-inner {
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: flex-start;
+      gap: 2rem;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--serif); font-weight: 700; font-size: 1.125rem;
+      color: var(--ink); margin-bottom: 0.5rem;
+    }
+    .footer-brand .nav-brand-icon {
+      width: 30px; height: 30px; font-size: 1rem;
+    }
+    .footer-tagline {
+      font-size: 0.875rem; color: var(--ink-3);
+    }
+    .footer-links h4 {
+      font-family: var(--sans);
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.75rem;
+    }
+    .footer-links ul { list-style: none; }
+    .footer-links li { margin-bottom: 0.5rem; }
+    .footer-links a {
+      font-size: 0.875rem; color: var(--ink-2);
+    }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-bottom {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center;
+      gap: 1rem;
+      font-size: 0.8125rem; color: var(--ink-3);
+    }
+    .footer-house {
+      display: flex; align-items: center; gap: 0.375rem;
+      font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 3.5rem 0 3rem; }
+      section { padding: 3rem 0; }
+      .pricing-card { padding: 2rem 1.5rem; }
+      .footer-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">
+        <span class="nav-brand-icon">🐂</span>
+        Arpent
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="this.classList.toggle('active');document.getElementById('nav-menu').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-menu">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li>
+          <button class="btn btn-ghost nav-signin" id="btn-signin" onclick="signInWithGoogle()">Sign in</button>
+          <div class="user-pill" id="user-pill">
+            <img id="user-avatar" src="" alt="">
+            <span id="user-name"></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-eyebrow">Livestock SaaS</span>
+      <h1>Ranch management,<br>simplified.</h1>
+      <p>Track every animal, pasture, and decision across your operation. Multi-species, offline-capable, and built for the way ranches actually work.</p>
+      <div class="hero-actions">
+        <a href="#demo" class="btn btn-primary btn-lg">Try the live demo</a>
+        <a href="#pricing" class="btn btn-ghost btn-lg">Join the beta</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Capabilities</p>
+        <h2 class="section-title">Everything your ranch needs</h2>
+        <p class="section-subtitle">From a small goat herd to a multi-species operation, Arpent adapts to how you work.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🐄</div>
+          <h3>Multi-Species Support</h3>
+          <p>Manage cattle, sheep, goats, hogs, and poultry in a single system. Species-specific fields, units, and workflows out of the box.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌾</div>
+          <h3>Pasture Tracking</h3>
+          <p>Map your pastures, track rotations, and monitor grazing pressure. Know which fields are resting, active, or ready for the next move.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💉</div>
+          <h3>Health Logs</h3>
+          <p>Record treatments, vaccinations, and withdrawal dates. Stay compliant and never lose a health record again.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📈</div>
+          <h3>Sell Timing (Encan)</h3>
+          <p>Model market scenarios, target weights, and cost-of-gain to find the optimal time to sell each group.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h3>Grazing Planning (Estive)</h3>
+          <p>Conservative grazing-capacity calculations and rotation plans. Avoid overgrazing with science-backed stocking rates.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📴</div>
+          <h3>Offline-Capable</h3>
+          <p>No cell service? No problem. Arpent works offline and syncs when you're back in range. Built for the field, not the office.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- ===== DEMO ===== -->
+  <section id="demo">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">See it in action</p>
+        <h2 class="section-title">Try the live demo</h2>
+        <p class="section-subtitle">Explore the full app below. No account required. Click around, add animals, check pastures.</p>
+      </div>
+      <div class="demo-card">
+        <div class="demo-header">
+          <div class="demo-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="demo-bar">backforty-652.netlify.app</div>
+        </div>
+        <iframe
+          src="https://backforty-652.netlify.app"
+          title="Arpent live demo"
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- ===== PRICING ===== -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Early Access</p>
+        <h2 class="section-title">Simple, honest pricing</h2>
+        <p class="section-subtitle">We're finalizing plans. Get in early and lock in the best deal.</p>
+      </div>
+      <div class="pricing-card">
+        <span class="pricing-badge">Founder Offer</span>
+        <h3>Pricing coming soon</h3>
+        <p>We're rolling out paid tiers shortly. The first <span class="highlight">25 users</span> get <span class="highlight">free-for-life full access</span> to every feature, every species, no limits.</p>
+        <a href="mailto:novemberkilollc@gmail.com?subject=Arpent%20Beta%20Access&body=I'd%20like%20to%20join%20the%20Arpent%20beta." class="btn btn-primary btn-lg">Join the beta</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- ===== BLOG ===== -->
+  <section id="blog">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">From the Blog</p>
+        <h2 class="section-title">Ranch management insights</h2>
+        <p class="section-subtitle">Practical advice for producers who want to run a tighter operation.</p>
+      </div>
+      <div class="blog-grid">
+        <article class="blog-card">
+          <div class="blog-thumb">🌿</div>
+          <div class="blog-body">
+            <p class="blog-meta">Coming soon</p>
+            <h3>Why Rotational Grazing Pays for Itself in Year One</h3>
+            <p>How planned rest periods improve forage quality, carry more animal units, and cut your hay bill.</p>
+            <span class="read-more">Read more &rarr;</span>
+          </div>
+        </article>
+        <article class="blog-card">
+          <div class="blog-thumb">📋</div>
+          <div class="blog-body">
+            <p class="blog-meta">Coming soon</p>
+            <h3>The Hidden Cost of Paper Records: What Producers Lose Every Year</h3>
+            <p>Lost health records, missed withdrawal dates, and duplicated effort. A look at the real price of not going digital.</p>
+            <span class="read-more">Read more &rarr;</span>
+          </div>
+        </article>
+        <article class="blog-card">
+          <div class="blog-thumb">🐑</div>
+          <div class="blog-body">
+            <p class="blog-meta">Coming soon</p>
+            <h3>Running Multiple Species on One Ranch: A Practical Guide</h3>
+            <p>Cattle, sheep, goats, and poultry can share land profitably. Here's how successful multi-species operations actually work.</p>
+            <span class="read-more">Read more &rarr;</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand">
+            <span class="nav-brand-icon">🐂</span>
+            Arpent
+          </div>
+          <p class="footer-tagline">Ranch management, simplified.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#demo">Live Demo</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#blog">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Sister Sites</h4>
+          <ul>
+            <li><a href="https://turfandtree.us.com" target="_blank" rel="noopener">Turf & Tree</a></li>
+            <li><a href="https://mowclock.app" target="_blank" rel="noopener">MowClock</a></li>
+            <li><a href="https://aubaine.fyi" target="_blank" rel="noopener">Aubaine</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:novemberkilollc@gmail.com">novemberkilollc@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-house">A <strong>1656</strong> brand</span>
+        <span>&copy; 2026 Arpent. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== Firebase SDK ===== -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ===== Firebase Init =====
+    firebase.initializeApp({
+      apiKey: "AIzaSyDHI-_3bZANlicN6vWCLv2jCPgNSSjchY4",
+      authDomain: "back-forty-app.firebaseapp.com",
+      projectId: "back-forty-app",
+      storageBucket: "back-forty-app.firebasestorage.app",
+      messagingSenderId: "646932283421",
+      appId: "1:646932283421:web:c1b2606f788adb827206f4"
+    });
+
+    var SITE = "arpent";
+    var db = firebase.firestore();
+    var sessionRef = null;
+    var sessionStart = new Date();
+    var pagesVisited = [window.location.pathname];
+    var heartbeatInterval = null;
+
+    // ===== Google Sign-In =====
+    function signInWithGoogle() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider).catch(function(err) {
+        console.error("Sign-in error:", err);
+      });
+    }
+
+    // ===== Auth State =====
+    firebase.auth().onAuthStateChanged(function(user) {
+      var btnSignin = document.getElementById("btn-signin");
+      var userPill = document.getElementById("user-pill");
+      var userAvatar = document.getElementById("user-avatar");
+      var userName = document.getElementById("user-name");
+
+      if (user) {
+        // Show user pill, hide sign-in
+        btnSignin.style.display = "none";
+        userPill.classList.add("visible");
+        userAvatar.src = user.photoURL || "";
+        userAvatar.alt = user.displayName || "User";
+        userName.textContent = user.displayName || user.email;
+
+        // Set GA4 user_id
+        if (typeof gtag === "function") {
+          gtag("set", {"user_id": user.uid});
+        }
+
+        // Start session tracking
+        startSession(user);
+      } else {
+        btnSignin.style.display = "";
+        userPill.classList.remove("visible");
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+      }
+    });
+
+    // ===== Session Tracking =====
+    function startSession(user) {
+      var now = new Date();
+      sessionStart = now;
+
+      // Create session doc
+      sessionRef = db.collection("site_sessions").doc();
+      sessionRef.set({
+        email: user.email || "",
+        name: user.displayName || "",
+        photo: user.photoURL || "",
+        uid: user.uid,
+        site: SITE,
+        started: now.toISOString(),
+        lastPing: now.toISOString(),
+        duration: 0,
+        pages: pagesVisited
+      });
+
+      // Update site_users doc
+      db.collection("site_users").doc(user.uid).set({
+        email: user.email || "",
+        name: user.displayName || "",
+        photo: user.photoURL || "",
+        lastSite: SITE,
+        lastVisit: now.toISOString()
+      }, { merge: true });
+
+      // Heartbeat every 30s
+      heartbeatInterval = setInterval(function() {
+        updateSession();
+      }, 30000);
+    }
+
+    function updateSession() {
+      if (!sessionRef) return;
+      var now = new Date();
+      var duration = Math.round((now - sessionStart) / 1000);
+      sessionRef.update({
+        lastPing: now.toISOString(),
+        duration: duration,
+        pages: pagesVisited
+      }).catch(function() {});
+    }
+
+    // ===== Visibility Change =====
+    document.addEventListener("visibilitychange", function() {
+      if (document.visibilityState === "hidden") {
+        updateSession();
+      }
+    });
+
+    // ===== Close mobile nav on link click =====
+    document.querySelectorAll(".nav-links a").forEach(function(link) {
+      link.addEventListener("click", function() {
+        document.getElementById("nav-menu").classList.remove("open");
+        document.querySelector(".nav-toggle").classList.remove("active");
+      });
+    });
+  </script>
+
+</body>
+</html>
