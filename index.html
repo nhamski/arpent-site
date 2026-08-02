@@ -325,6 +325,16 @@
     @media (max-width: 640px) {
       .demo-card iframe { height: 450px; }
     }
+    .demo-cta {
+      display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .demo-cta-icon { font-size: 2.5rem; }
+    .demo-install-hint {
+      max-width: 30rem;
+      font-size: 0.875rem; color: var(--ink-3); line-height: 1.6;
+    }
 
     /* ===== Pricing ===== */
     #pricing { background: var(--paper-sunk); }
@@ -505,7 +515,7 @@
       <h1>Ranch management,<br>simplified.</h1>
       <p>Track every animal, pasture, and decision across your operation. Multi-species, offline-capable, and built for the way ranches actually work.</p>
       <div class="hero-actions">
-        <a href="#demo" class="btn btn-primary btn-lg">Try the live demo</a>
+        <a href="https://app.arpent.us.com" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Open Arpent →</a>
         <a href="#pricing" class="btn btn-ghost btn-lg">Join the beta</a>
       </div>
     </div>
@@ -563,22 +573,21 @@
     <div class="container">
       <div class="section-header">
         <p class="section-label">See it in action</p>
-        <h2 class="section-title">Try the live demo</h2>
-        <p class="section-subtitle">Explore the full app below. No account required. Click around, add animals, check pastures.</p>
+        <h2 class="section-title">Open the app</h2>
+        <p class="section-subtitle">No account required to start. Click around, add animals, check pastures — sign in with Google any time to save your data across visits.</p>
       </div>
       <div class="demo-card">
         <div class="demo-header">
           <div class="demo-dots">
             <span></span><span></span><span></span>
           </div>
-          <div class="demo-bar">backforty-652.netlify.app</div>
+          <div class="demo-bar">app.arpent.us.com</div>
         </div>
-        <iframe
-          src="https://backforty-652.netlify.app"
-          title="Arpent live demo"
-          loading="lazy"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-        ></iframe>
+        <div class="demo-cta">
+          <div class="demo-cta-icon">🐂</div>
+          <a href="https://app.arpent.us.com" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Open Arpent →</a>
+          <p class="demo-install-hint">Works right in your browser on phone, tablet, or desktop. Once it's open, use your browser's "Add to Home Screen" or install icon to run it like a native app — offline-capable, no app store required.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -597,7 +606,10 @@
         <span class="pricing-badge">Founder Offer</span>
         <h3>Pricing coming soon</h3>
         <p>We're rolling out paid tiers shortly. The first <span class="highlight">25 users</span> get <span class="highlight">free-for-life full access</span> to every feature, every species, no limits.</p>
-        <a href="mailto:novemberkilollc@gmail.com?subject=Arpent%20Beta%20Access&body=I'd%20like%20to%20join%20the%20Arpent%20beta." class="btn btn-primary btn-lg">Join the beta</a>
+        <div class="hero-actions">
+          <a href="https://app.arpent.us.com" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Open Arpent →</a>
+          <a href="mailto:novemberkilollc@gmail.com?subject=Arpent%20Beta%20Access&body=I'd%20like%20to%20join%20the%20Arpent%20beta." class="btn btn-ghost btn-lg">Claim a founder seat</a>
+        </div>
       </div>
     </div>
   </section>
