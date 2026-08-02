@@ -20,13 +20,18 @@
   </script>
 
   <style>
-    /* ===== 1656 Design Tokens ===== */
+    /* ===== Arpent Design Tokens (brand master sheet) ===== */
     :root {
-      --paper:#faf6ee; --paper-raised:#fffdf8; --paper-sunk:#f0e9db;
-      --line:#e3d9c6; --line-strong:#d3c6ab;
-      --ink:#2a2118; --ink-2:#5d5241; --ink-3:#8c7f66;
-      --accent:#a9762c; --accent-soft:#c79a4e; --accent-wash:#f3e7cf;
-      --accent-dark:#8b5e1a;
+      --paper:#F6F2EA; --paper-raised:#FBF8F2; --paper-sunk:#F0EBDF;
+      --line:#E4DCC9; --line-strong:#D8CCB4;
+      --ink:#241C14; --ink-2:#6B6153; --ink-3:#8C7F66;
+      --accent:#7A5230; --accent-soft:#9B7D64; --accent-wash:#DED4CB;
+      --accent-dark:#5C3E24;
+      --rust:#C4763B;
+      --pos:#3B4A24; --pos-bg:#E7EEDA;
+      --warn:#6B5B32; --warn-bg:#EDE3C8;
+      --neg:#7A2E20; --neg-bg:#F0DEDA;
+      --destructive:#A83E2C;
       --brass:#a9762c; --brass-wash:#f3e7cf;
       --serif:"Source Serif 4","Iowan Old Style","Palatino Linotype",Georgia,serif;
       --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -37,28 +42,41 @@
 
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
-        --paper:#1c150e; --paper-raised:#251c12; --paper-sunk:#171009;
-        --line:#392c1d; --line-strong:#4a3a26;
-        --ink:#f4eede; --ink-2:#cbbda3; --ink-3:#9c8e74;
-        --accent:#d3a24f; --accent-soft:#b98a3d; --accent-wash:#33260f;
-        --accent-dark:#e0b060;
+        --paper:#241C14; --paper-raised:#3A2F22; --paper-sunk:#1C150E;
+        --line:#4A3D2C; --line-strong:#5A4B36;
+        --ink:#F6F2EA; --ink-2:#C9BC9E; --ink-3:#A08F72;
+        --accent:#A56B3E; --accent-soft:#B78965; --accent-wash:#191009;
+        --accent-dark:#744B2B;
+        --rust:#D98A4E;
+        --pos:#AEC08A; --pos-bg:#2F3A1E;
+        --warn:#C9B87A; --warn-bg:#3A331E;
+        --neg:#D98A6E; --neg-bg:#3A241E;
         --brass:#d3a24f; --brass-wash:#33260f;
       }
     }
     :root[data-theme="dark"] {
-      --paper:#1c150e; --paper-raised:#251c12; --paper-sunk:#171009;
-      --line:#392c1d; --line-strong:#4a3a26;
-      --ink:#f4eede; --ink-2:#cbbda3; --ink-3:#9c8e74;
-      --accent:#d3a24f; --accent-soft:#b98a3d; --accent-wash:#33260f;
-      --accent-dark:#e0b060;
+      --paper:#241C14; --paper-raised:#3A2F22; --paper-sunk:#1C150E;
+      --line:#4A3D2C; --line-strong:#5A4B36;
+      --ink:#F6F2EA; --ink-2:#C9BC9E; --ink-3:#A08F72;
+      --accent:#A56B3E; --accent-soft:#B78965; --accent-wash:#191009;
+      --accent-dark:#744B2B;
+      --rust:#D98A4E;
+      --pos:#AEC08A; --pos-bg:#2F3A1E;
+      --warn:#C9B87A; --warn-bg:#3A331E;
+      --neg:#D98A6E; --neg-bg:#3A241E;
       --brass:#d3a24f; --brass-wash:#33260f;
     }
     :root[data-theme="light"] {
-      --paper:#faf6ee; --paper-raised:#fffdf8; --paper-sunk:#f0e9db;
-      --line:#e3d9c6; --line-strong:#d3c6ab;
-      --ink:#2a2118; --ink-2:#5d5241; --ink-3:#8c7f66;
-      --accent:#a9762c; --accent-soft:#c79a4e; --accent-wash:#f3e7cf;
-      --accent-dark:#8b5e1a;
+      --paper:#F6F2EA; --paper-raised:#FBF8F2; --paper-sunk:#F0EBDF;
+      --line:#E4DCC9; --line-strong:#D8CCB4;
+      --ink:#241C14; --ink-2:#6B6153; --ink-3:#8C7F66;
+      --accent:#7A5230; --accent-soft:#9B7D64; --accent-wash:#DED4CB;
+      --accent-dark:#5C3E24;
+      --rust:#C4763B;
+      --pos:#3B4A24; --pos-bg:#E7EEDA;
+      --warn:#6B5B32; --warn-bg:#EDE3C8;
+      --neg:#7A2E20; --neg-bg:#F0DEDA;
+      --destructive:#A83E2C;
       --brass:#a9762c; --brass-wash:#f3e7cf;
     }
 
